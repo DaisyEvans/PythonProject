@@ -13,8 +13,8 @@ import time
 # 口径为折溢摊，当折溢摊净价修正久期为空时，应取盯市损益分析--市场修正久期，需自行计算
 # 2019-04-19：添加已实现损益、修改债券规模为轧差统计、修改待偿期计算方法（排除同存活期规模）
 # 2019-04-28: 修改待偿期计算方法（排除债券及非标资产负面额）、修改为无需对导出的损益分析表手工加数据处理、
-# #             处理后的表中包含规模为0但损益不为0的数据、修改混合估值根据投组取值、导出excel数据保留位数处理
-# #             修改口径为折溢摊时，折溢摊成本/折溢摊净价收益率为空时，取市值/市场净价收益率（混合估值处理相同）
+#              处理后的表中包含规模为0但损益不为0的数据、修改混合估值根据投组取值、导出excel数据保留位数处理
+#              修改口径为折溢摊时，折溢摊成本/折溢摊净价收益率为空时，取市值/市场净价收益率（混合估值处理相同）
 
 
 def excel_handle():
@@ -242,21 +242,21 @@ def excel_handle():
         if data[2] != 0 or data[6] != 0:
             # 名称、规模、收益率、待偿期、综合久期、已实现损益
             newSheet.write(i, 1, data[1])
-            newSheet.write(i, 2, int(data[2]))
+            newSheet.write(i, 2, round(data[2]))
             newSheet.write(i, 3, '%.4f' % data[3])
             newSheet.write(i, 4, '%.4f' % data[4])
             newSheet.write(i, 5, '%.4f' % data[5])
-            newSheet.write(i, 6, int(data[6]))
+            newSheet.write(i, 6, round(data[6]))
             if data[0] != 0:
                 # 大类名称
                 newSheet.write(i, 0, data[0])
             i += 1
         newSheet2.write(j, 1, data[1])
-        newSheet2.write(j, 2, int(data[2]))
+        newSheet2.write(j, 2, round(data[2]))
         newSheet2.write(j, 3, '%.4f' % data[3])
         newSheet2.write(j, 4, '%.4f' % data[4])
         newSheet2.write(j, 5, '%.4f' % data[5])
-        newSheet2.write(j, 6, int(data[6]))
+        newSheet2.write(j, 6, round(data[6]))
         if data[0] != 0:
             newSheet2.write(j, 0, data[0])
         j += 1

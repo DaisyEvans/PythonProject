@@ -15,7 +15,7 @@ import time
 #             处理后的表中包含规模为0但损益不为0的数据、导出excel数据保留位数处理
 
 def excel_handle():
-    filename = r"C:\Users\LHF\Desktop\指定成本与FIFO损益分析\20190412171313.xls"
+    filename = r"C:\Users\LHF\Desktop\指定成本与FIFO损益分析\20190506143804.xls"
     data = xlrd.open_workbook(filename)
     table = data.sheet_by_index(0)
 
@@ -77,8 +77,8 @@ def excel_handle():
     # accruedInterestCol = getColumnIndex(table, '应计利息')
     marketYieldRateCol = getColumnIndex(table, '市场净价收益率%')
     pendingPeriodCol = getColumnIndex(table, '待偿期')
-    maketModifiedDurationCol = getColumnIndex(table, '市场修正久期')
-    modifiedDurationCol = getColumnIndex(table, '折溢摊价格修正久期')
+    marketModifiedDurationCol = getColumnIndex(table, '市场修正久期')
+    amortModifiedDurationCol = getColumnIndex(table, '折溢摊价格修正久期')
     trade_portfolio_col = getColumnIndex(table, '交易投组')
     amortCostCol = getColumnIndex(table, '折溢摊成本')
     amortYieldRateCol = getColumnIndex(table, '折溢摊净价收益率%')
@@ -111,7 +111,7 @@ def excel_handle():
         # 计算每小类的规模
         for pointer in range(pointer_begin, pointer_end):
             # 债券轧差统计
-            if table.cell_type(pointer, maketValueCol) == 2:
+            if table.cell_type(pointer, maketValueCol) == 2 or table.cell_type(pointer, amort_maket_value_col) == 2:
                 # 盯市：全价市值；市场净价收益率
                 if caliber == 0:
                     # 剔除非数值型数据
@@ -141,13 +141,13 @@ def excel_handle():
                 if lar_name_list[lar_rowindex] == '债券小计':
                     # 盯市：市场修正久期
                     if caliber == 0:
-                        if table.cell_type(pointer, maketModifiedDurationCol) == 2:
-                            tempDuration = table.cell_value(pointer, maketModifiedDurationCol)
+                        if table.cell_type(pointer, marketModifiedDurationCol) == 2:
+                            tempDuration = table.cell_value(pointer, marketModifiedDurationCol)
                             tempScaleDuration += tempScale * tempDuration
                     # 折溢摊：折溢摊价格修正久期
                     elif caliber == 1:
-                        if table.cell_type(pointer, modifiedDurationCol) == 2:
-                            tempDuration = table.cell_value(pointer, modifiedDurationCol)
+                        if table.cell_type(pointer, amortModifiedDurationCol) == 2:
+                            tempDuration = table.cell_value(pointer, amortModifiedDurationCol)
                             tempScaleDuration += tempScale * tempDuration
                     else:
                         pass
@@ -216,21 +216,21 @@ def excel_handle():
         if data[2] != 0:
             # 名称、规模、收益率、待偿期、综合久期、已实现损益
             newSheet.write(i, 1, data[1])
-            newSheet.write(i, 2, int(data[2]))
+            newSheet.write(i, 2, round(data[2]))
             newSheet.write(i, 3, '%.4f' % data[3])
             newSheet.write(i, 4, '%.4f' % data[4])
             newSheet.write(i, 5, '%.4f' % data[5])
-            newSheet.write(i, 6, int(data[6]))
+            newSheet.write(i, 6, round(data[6]))
             if data[0] != 0:
                 # 大类名称
                 newSheet.write(i, 0, data[0])
             i += 1
         newSheet2.write(j, 1, data[1])
-        newSheet2.write(j, 2, int(data[2]))
+        newSheet2.write(j, 2, round(data[2]))
         newSheet2.write(j, 3, '%.4f' % data[3])
         newSheet2.write(j, 4, '%.4f' % data[4])
         newSheet2.write(j, 5, '%.4f' % data[5])
-        newSheet2.write(j, 6, int(data[6]))
+        newSheet2.write(j, 6, round(data[6]))
         if data[0] != 0:
             newSheet2.write(j, 0, data[0])
         j += 1
